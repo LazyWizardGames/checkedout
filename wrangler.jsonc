@@ -1,0 +1,8 @@
+// Serves the prototype in ./game as static files on workers.dev. Deploy: npx wrangler deploy
+{
+  "name": "checkedout",
+  "account_id": "60fae7ec316f8b77862f90de58611103",
+  "compatibility_date": "2025-09-01",
+  "assets": { "directory": "./game" },
+  "workers_dev": true
+}
