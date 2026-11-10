@@ -117,19 +117,21 @@ function grandma(scared = false) {
 }
 
 function influencer(scared = false) {
+  const H = '#e8b84f';
   const o = { coat: '#ff5fa2', legs: '#2f3550', skin: SKIN[1], scared, shoes: '#f4f0ea',
-    hair: `<path d="M-11 -56 Q-12 -70 0 -70 Q12 -70 11 -56 Q8 -64 0 -64 Q-8 -64 -11 -56 Z" fill="#e8b84f" class="o"/>
-           <path d="M9 -64 Q20 -62 17 -46" fill="none" stroke="${OUT}" stroke-width="6" stroke-linecap="round"/>
-           <path d="M9 -64 Q20 -62 17 -46" fill="none" stroke="#e8b84f" stroke-width="4" stroke-linecap="round"/>` };
-  return body(o) +
+    hair: `<path d="M-11.5 -55 Q-13 -71 1 -70.5 Q12.5 -70 11.5 -56 Q9 -63 3 -62.5 Q-3 -66 -8 -60 Q-10 -58 -11.5 -55 Z" fill="${H}" class="o"/>` };
+  // ponytail sits behind the head and body, on the side away from the phone arm
+  const pony = `<path d="M-6 -68 Q-21 -68 -21 -52 Q-21 -41 -14 -35 Q-17 -45 -13 -55 Q-11 -62 -6 -63 Z" fill="${H}" class="o"/>
+    <circle cx="-8" cy="-66" r="2.8" fill="#d24685" class="o"/>`;
+  return pony + body(o) +
     `<path d="M-6 -44 Q0 -38 6 -44" fill="none" stroke="#d24685" stroke-width="2"/>
      <rect x="-6" y="-32" width="12" height="6" rx="2" fill="#d24685"/>` +
     arm(-11, -42, -15, -25, o.coat) + hand(-15, -24, o.skin) +
+    head(o) +
     arm(11, -42, 20, -64, o.coat) + hand(20, -65, o.skin) +
     `<rect x="16" y="-79" width="9" height="15" rx="2" fill="#1d1d26" class="o"/>
      <rect x="17.5" y="-77" width="6" height="10" fill="#7fe8ff"/>
-     <circle cx="20.5" cy="-82" r="2" fill="#ff3b3b" filter="url(#glow)"/>` +
-    head(o);
+     <circle cx="20.5" cy="-82" r="2" fill="#ff3b3b" filter="url(#glow)"/>`;
 }
 
 function hunter(scared = false) {
