@@ -1,2 +1,5 @@
 .wrangler/
 node_modules/
+android/.tools/
+android/build/
+android/release.p12

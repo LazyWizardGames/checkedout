@@ -5,16 +5,69 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
 <title>Checked Out</title>
 <style>
-  html, body { margin: 0; height: 100%; background: #0e0a14; overflow: hidden; touch-action: none;
+  @font-face { font-family: Caladea; src: url(fonts/Caladea-Regular.ttf); font-weight: 400; }
+  @font-face { font-family: Caladea; src: url(fonts/Caladea-Bold.ttf); font-weight: 700; }
+  @font-face { font-family: Caladea; src: url(fonts/Caladea-Italic.ttf); font-style: italic; }
+  @font-face { font-family: Inter; src: url(fonts/Inter-Regular.otf); font-weight: 400; }
+  @font-face { font-family: Inter; src: url(fonts/Inter-SemiBold.otf); font-weight: 600; }
+  @font-face { font-family: Inter; src: url(fonts/Inter-Bold.otf); font-weight: 700; }
+  @font-face { font-family: Inter; src: url(fonts/Inter-ExtraBold.otf); font-weight: 800; }
+  :root { --bg: #0e0a14; --panel: #1e1424; --line: #3a2c42; --cream: #f3e6c8; --dim: #a99bb3; --mute: #8a7c95;
+    --cyan: #7cf3e6; --gold: #ecc96c; --red: #ff5a4e; --green: #5fd47a; --paper: #f3e8cf; --ink: #2a1d24; }
+  html, body { margin: 0; height: 100%; background: var(--bg); overflow: hidden; touch-action: none;
     -webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: transparent; }
   svg#game { display: block; width: 100vw; height: 100vh; height: 100dvh; }
   .o { stroke: #140d1c; stroke-width: 1.6; stroke-linejoin: round; stroke-linecap: round; }
   .hit { cursor: pointer; }
-  text { pointer-events: none; }
+  svg text { pointer-events: none; }
+
+  #ui { position: fixed; inset: 0; display: none; background: rgba(11, 7, 18, .97); color: var(--cream);
+    font-family: Inter, sans-serif; overflow-y: auto; touch-action: pan-y; -webkit-overflow-scrolling: touch; }
+  #ui.show { display: block; }
+  #ui .col { max-width: 420px; margin: 0 auto; padding: 22px 16px 40px; box-sizing: border-box; }
+  #ui h1 { font: 700 34px Caladea, serif; letter-spacing: 3px; text-align: center; margin: 18px 0 4px; }
+  #ui h2 { font: 800 12px Inter, sans-serif; letter-spacing: 2px; color: var(--cyan); margin: 26px 0 10px; }
+  #ui .sub { font: italic 15px Caladea, serif; color: var(--dim); text-align: center; margin: 0 0 14px; }
+  #ui p { font: 15px/1.45 Caladea, serif; margin: 8px 0; }
+  .btn { display: block; width: 100%; max-width: 260px; margin: 18px auto 0; padding: 14px; border: 0; border-radius: 26px;
+    background: var(--cyan); color: #0d1a1d; font: 800 15px Inter, sans-serif; letter-spacing: 1px; box-shadow: 0 0 18px #7cf3e655; }
+  .btn.ghost { background: transparent; color: var(--dim); border: 1.5px solid var(--line); box-shadow: none; }
+  .small { font-size: 12px; color: var(--mute); }
+  .row { display: flex; justify-content: space-between; align-items: baseline; padding: 6px 0; border-bottom: 1px solid #2a2032; }
+  .row b { font: 800 17px Inter, sans-serif; }
+  .row span { font: 700 12px Inter, sans-serif; color: var(--mute); letter-spacing: 1px; }
+  .neg { color: var(--red); } .pos { color: #7ee08f; }
+  .card { background: var(--panel); border: 1.5px solid var(--line); border-radius: 10px; padding: 10px 12px; margin: 8px 0;
+    display: flex; gap: 12px; align-items: center; }
+  .card .art { flex: 0 0 64px; height: 76px; }
+  .card .body { flex: 1; min-width: 0; }
+  .card .name { font: 700 16px Caladea, serif; letter-spacing: 1px; }
+  .card .desc { font: italic 13px/1.35 Caladea, serif; color: #cbbfd3; margin-top: 2px; }
+  .card .meta { font: 600 11.5px Inter, sans-serif; color: var(--mute); margin-top: 5px; }
+  .card button { flex: 0 0 auto; border: 1.5px solid var(--cyan); background: #0a1a1f; color: var(--cyan); border-radius: 16px;
+    padding: 7px 11px; font: 700 12px Inter, sans-serif; }
+  .card button:disabled { border-color: var(--line); color: #5d5266; background: transparent; }
+  .card button.on { background: var(--cyan); color: #0d1a1d; }
+  .stages { display: flex; gap: 3px; margin-top: 6px; }
+  .stages i { flex: 1; height: 5px; border-radius: 3px; background: #3a2c42; }
+  .stages i.on { background: var(--cyan); }
+  .memo { background: #e9e4d6; color: #2a2433; padding: 14px 16px; transform: rotate(-.8deg); margin: 14px 4px;
+    font: 14px/1.45 FreeMono, 'Courier New', monospace; border: 2px solid #140d1c; }
+  .memo .hd { font: 700 12px Caladea, serif; letter-spacing: 2px; text-align: center; border-bottom: 1.5px solid #2a2433;
+    padding-bottom: 6px; margin-bottom: 8px; }
+  .review { background: var(--paper); color: var(--ink); padding: 10px 14px; margin: 10px 2px; border: 2px solid #140d1c; border-radius: 3px; }
+  .review:nth-child(odd) { transform: rotate(-1deg); } .review:nth-child(even) { transform: rotate(1deg); }
+  .review .s { color: #e2a92c; letter-spacing: 2px; font-size: 16px; }
+  .review .t { font: italic 15px/1.35 Caladea, serif; margin: 4px 0; }
+  .review .w { font: 600 11px Inter, sans-serif; color: #7a6a62; text-align: right; }
+  .tag { display: inline-block; padding: 2px 7px; border-radius: 8px; font: 700 10.5px Inter, sans-serif; background: #2b2034; color: var(--dim); }
+  .tag.cy { background: #123036; color: var(--cyan); }
+  .end p { font-size: 17px; text-align: center; }
 </style>
 </head>
 <body>
 <svg id="game" viewBox="0 0 390 844" preserveAspectRatio="xMidYMid meet"></svg>
+<div id="ui"></div>
 <script src="art.js"></script>
 <script src="game.js"></script>
 </body>
